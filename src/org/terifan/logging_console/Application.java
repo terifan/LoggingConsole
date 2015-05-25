@@ -1,4 +1,4 @@
-package org.terifan.apps.logging_console;
+package org.terifan.logging_console;
 
 import javax.swing.JFrame;
 import org.terifan.util.log.Log;
@@ -12,7 +12,7 @@ public class Application
 
 	public Application()
 	{
-		mLogView = new LogView();
+		mLogView = new LogView(new LogModel());
 
 		mFrame = new JFrame();
 		mFrame.add(mLogView);

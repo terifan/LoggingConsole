@@ -1,4 +1,4 @@
-package org.terifan.apps.logging_console;
+package org.terifan.logging_console;
 
 import java.util.Random;
 
