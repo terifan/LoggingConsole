@@ -1,7 +1,7 @@
 package org.terifan.logging_console;
 
 import java.util.Date;
-import org.terifan.util.bundle.Bundle;
+import org.terifan.bundle.Bundle;
 
 
 public class LogRow
