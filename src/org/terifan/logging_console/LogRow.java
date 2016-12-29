@@ -1,31 +1,28 @@
 package org.terifan.logging_console;
 
-import java.util.Date;
-import org.terifan.bundle.Bundle;
-
 
 public class LogRow
 {
-	private Date mTime;
+	private String mTime;
 	private int mDepth;
+	private int mColor;
 	private String mTag;
 	private String mMessage;
-	private LogType mLogType;
-	private Bundle mExtra;
+	private String mLogType;
 
 
-	public LogRow(Date aTime, LogType aLogType, int aDepth, String aTag, String aMessage, Bundle aExtra)
+	public LogRow(String aTime, String aLogType, int aDepth, int aColor, String aTag, String aMessage)
 	{
 		mTime = aTime;
 		mLogType = aLogType;
 		mDepth = aDepth;
+		mColor = aColor;
 		mTag = aTag;
 		mMessage = aMessage;
-		mExtra = aExtra;
 	}
 
 
-	public LogType getLogType()
+	public String getLogType()
 	{
 		return mLogType;
 	}
@@ -37,7 +34,13 @@ public class LogRow
 	}
 
 
-	public Date getTime()
+	public int getColor()
+	{
+		return mColor;
+	}
+
+
+	public String getTime()
 	{
 		return mTime;
 	}
@@ -52,11 +55,5 @@ public class LogRow
 	public String getMessage()
 	{
 		return mMessage;
-	}
-
-
-	public Bundle getExtra()
-	{
-		return mExtra;
 	}
 }
