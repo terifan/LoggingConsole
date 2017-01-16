@@ -79,7 +79,7 @@ public class Application
 
 							depth = Math.min(Math.max(depth + rnd.nextInt(3) - 1, 0), 5);
 
-							Thread.sleep(i < 100 ? 0 : 1000);
+							Thread.sleep(i < 100 ? 0 : 100);
 						}
 					}
 					catch (Throwable e)

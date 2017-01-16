@@ -8,12 +8,15 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.event.AdjustmentListener;
-import java.util.Collections;
-import java.util.Map;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseWheelEvent;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
+import javax.swing.SwingUtilities;
 import org.terifan.ui.Utilities;
 
 
@@ -29,6 +32,7 @@ public class LogView extends JPanel
 	private int mTagWidth = 250;
 	private int mIndentWidth = 50;
 	private int mRowHeight = 17;
+	private int mMaxLines = 100;
 
 	private TreeMap<Integer,LogRow> mRows;
 	private AtomicInteger mCounter;
@@ -45,8 +49,10 @@ public class LogView extends JPanel
 		mScrollBar = new JScrollBar(JScrollBar.VERTICAL, 0, 41, 0, Math.max(41, mRows.size()));
 		mScrollBar.addAdjustmentListener(mAdjustmentListener);
 
-		mLogPanel.setBackground(Color.WHITE);
 		mLogPanel.setOpaque(true);
+		mLogPanel.setBackground(Color.WHITE);
+		mLogPanel.addComponentListener(mComponentAdapter);
+		mLogPanel.addMouseWheelListener(mMouseAdapter);
 
 		super.add(mLogPanel, BorderLayout.CENTER);
 		super.add(mScrollBar, BorderLayout.EAST);
@@ -55,17 +61,21 @@ public class LogView extends JPanel
 
 	public void add(LogRow aLogRow)
 	{
-		if (mRows.size() > 100)
+		if (mRows.size() > mMaxLines)
 		{
 			mRows.remove(mRows.firstKey());
 		}
 
-		mRows.put(mCounter.getAndIncrement(), aLogRow);
+		SwingUtilities.invokeLater(()->
+		{
+			mRows.put(mCounter.getAndIncrement(), aLogRow);
 
-		mScrollBar.setMaximum(Math.max(41, mRows.size()));
-		mScrollBar.invalidate();
-		mLogPanel.invalidate();
-		repaint();
+			mScrollBar.setValue(Math.max(0, mScrollBar.getValue() - 1));
+			mScrollBar.setMaximum(Math.max(mLogPanel.getHeight() / mRowHeight, mRows.size()));
+			mScrollBar.invalidate();
+			mLogPanel.invalidate();
+			repaint();
+		});
 	}
 
 
@@ -126,8 +136,39 @@ public class LogView extends JPanel
 	};
 
 
-	private transient AdjustmentListener mAdjustmentListener = (e) ->
+	private transient AdjustmentListener mAdjustmentListener = aEvent ->
 	{
 		mLogPanel.repaint();
+	};
+
+
+	private ComponentAdapter mComponentAdapter = new ComponentAdapter()
+	{
+		@Override
+		public void componentResized(ComponentEvent aEvent)
+		{
+			SwingUtilities.invokeLater(()->
+			{
+				int s = mLogPanel.getHeight() / mRowHeight;
+
+				mScrollBar.setVisibleAmount(s);
+
+				int v = mRows.size() - s;
+				if (mScrollBar.getValue() > v)
+				{
+					mScrollBar.setValue(v);
+				}
+			});
+		}
+	};
+
+
+	private MouseAdapter mMouseAdapter = new MouseAdapter()
+	{
+		@Override
+		public void mouseWheelMoved(MouseWheelEvent aEvent)
+		{
+			mScrollBar.setValue(mScrollBar.getValue() + aEvent.getWheelRotation() * aEvent.getScrollAmount());
+		}
 	};
 }
