@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 import javax.swing.JFrame;
-import org.terifan.util.log.Log;
 
 
 public class Application
@@ -48,7 +47,7 @@ public class Application
 					}
 					catch (Throwable e)
 					{
-						e.printStackTrace(Log.out);
+						e.printStackTrace(System.out);
 					}
 				}
 			}.start();
@@ -84,14 +83,14 @@ public class Application
 					}
 					catch (Throwable e)
 					{
-						e.printStackTrace(Log.out);
+						e.printStackTrace(System.out);
 					}
 				}
 			}.start();
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace(Log.out);
+			e.printStackTrace(System.out);
 		}
 	}
 }
